@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.linalg as la
-#Finite Difference Approximations for solving the time-independent Schrodinger
+#Finite Difference Approximations for solving the time-independent Schrodinger with linear potential
+#also known as a triangular potential well: infinite potential well with 1 side a line of constant slope
 
 #STEP 1: Build the mesh
 
@@ -10,6 +11,7 @@ import scipy.linalg as la
 n=int(input('enter number of grid points: '))
 a=float(input('enter lower limit of domain: '))
 b=float(input('enter lower limit of domain: '))
+v=str(input('enter potential type (constant, linear, or quadratic): '))
 #n=200
 #b=1
 #a=0
@@ -23,7 +25,15 @@ H=np.zeros(shape=(n,n))
 #Define constants and potential
 p=1
 def V(x):
-    return 0
+    if v=='constant':
+        return 0
+    if v=='linear':
+        return x
+    if v=='quadratic':
+        return x**2
+    else:
+        print('Invalid potential! Try again.')
+        exit()
 
 #Define boundary conditions
 

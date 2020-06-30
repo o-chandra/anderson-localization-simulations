@@ -7,8 +7,13 @@ import scipy.linalg as la
 
 #define number of grid points and mesh spacing
 
-n=50
-xf=1
+n=int(input('enter number of grid points: '))
+a=float(input('enter lower limit of domain: '))
+b=float(input('enter lower limit of domain: '))
+#n=200
+#b=1
+#a=0
+xf=b-a
 dx=xf/(n+1)
 x = np.linspace(0,xf,n)
 print(x)
@@ -18,13 +23,11 @@ H=np.zeros(shape=(n,n))
 #Define constants and potential
 p=1
 def V(x):
-    return -x**2
-
-
+    return 0
 
 #Define boundary conditions
 
-H[0,0]=2*p-V(x[1])
+H[0,0]=2*p-V(x[0])
 H[0,1]=-p
 H[n-1,n-2]=-p
 H[n-1,n-1]=2*p+V(x[n-1])
@@ -48,16 +51,12 @@ print(energies)
 
 
 #Plot the eigenfunctions
-
-print('x is:')
-print x
-
 plt.figure(figsize=(10,10))
 for i in range(len(z)):
     y=[]
     y=np.append(y,vec[:,z[i]])
-    print 'eigenvector number:', i+1
-    print y
+    print ('eigenvector number:', i+1)
+    print(y)
     plt.plot(x,y,lw=3,label="{} ".format(i))
     plt.xlabel('x', size=14)
     plt.ylabel('$\psi$(x)', size=14)

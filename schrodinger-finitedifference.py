@@ -7,9 +7,11 @@ import scipy.linalg as la
 
 #define number of grid points and mesh spacing
 
-n=100
+n=50
 xf=1
 dx=xf/(n+1)
+x = np.linspace(0,xf,n)
+print(x)
 
 #allocate space for the operator matrix
 H=np.zeros(shape=(n,n))
@@ -18,19 +20,21 @@ p=1
 def V(x):
     return -x**2
 
+
+
 #Define boundary conditions
 
-H[0,0]=2*p-V(1)
+H[0,0]=2*p-V(x[1])
 H[0,1]=-p
 H[n-1,n-2]=-p
-H[n-1,n-1]=2*p+V(n)
+H[n-1,n-1]=2*p+V(x[n-1])
 
 #Fill in the rest of the matrix
 for j in range (1, n):
     H[j-1,j-2]=-p
-    H[j-1,j-1]=2*p-V(j)
+    H[j-1,j-1]=2*p-V(x[j-1])
     H[j-1,j]=-p
-
+print(H)
 #Solve for the eigenvalues and eigenvectors, sort them from smallest to largest (abs)
 val, vec=np.linalg.eig(H)
 z=np.argsort(val)
@@ -44,7 +48,7 @@ print(energies)
 
 
 #Plot the eigenfunctions
-x = np.linspace(0,n-1,n)
+
 print('x is:')
 print x
 

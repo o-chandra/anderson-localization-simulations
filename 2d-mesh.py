@@ -21,17 +21,20 @@ else:
     b=1
 
 xval=np.linspace(b,a, n)
+print(xval)
+first=xval[0]
+print(first)
+second=xval[1]
+print(second)
 yval=np.linspace(b,a,n)
 x,y=np.meshgrid(xval,yval)
 print(x,y)
-
+#change this definition
 def V(x,y):
      return np.piecewise(x, [x==y, x!=y], [1,0])
 v=V(x,y)
-#print(v)
+#plot the grid
 plt.plot(x, y, marker='.', color='k', linestyle='none')
+#plot the potential
 ax.plot_surface(x,y,v,cmap='cool')
-ax.scatter3D(x,y,v)
 plt.show()
-
-#TODO: figure out how to assign a value (0 or 1) to each grid square

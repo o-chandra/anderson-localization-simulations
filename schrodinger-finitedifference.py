@@ -1,27 +1,63 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.linalg as la
-#Finite Difference Approximations for solving the time-independent Schrodinger
+from matplotlib import pyplot
+from mpl_toolkits.mplot3d import Axes3D
+import random
+from matplotlib import cm
 
-#STEP 1: Build the mesh
+fig = plt.figure()
+ax = fig.gca(projection='3d')
 
-#define number of grid points and mesh spacing
+#set up the mesh
+type=str(input('use test parameters? (yes/no)'))
+if type=='no':
+    m=int(input('enter number of grid points: '))
+    n=int(input('enter potential resolution: '))
+    a=float(input('enter lower limit of domain: '))
+    b=float(input('enter upper limit of domain: '))
+    vmax=int(input('enter maximum potential as an integer: '))
+else:
+    n=10
+    m=5
+    a=0
+    b=1
+    vmax=50
 
-n=int(input('enter number of grid points: '))
-a=float(input('enter lower limit of domain: '))
-b=float(input('enter upper limit of domain: '))
-v=str(input('enter potential type (constant, linear, or quadratic): '))
-e=int(input('enter number of eigenfunctions to plot: '))
-#n=100
-#b=1
-#a=0
-#e=5
-#v='quadratic'
 xf=b-a
 dx=xf/(n+1)
 x = np.linspace(0,xf,n)
-print(x)
+y = x
+[x,y]=np.meshgrid(x,y)
 
+
+#set up figure and axes
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+
+#generate analytic potential
+U=np.random.rand(m,m);
+print('U is:')
+print(U)
+#generate projected discretized potential
+Ug = np.zeros(x.shape)
+for i in range (N):
+    for j in range(N):
+        delx = float(L)/N;
+        dely = delx
+
+        xmin = (i)*delx
+        xmax = (i+1)*delx
+
+        ymin = (j)*dely
+        ymax = (j+1)*dely
+
+        vid = (x<=xmax) & (x>=xmin) & (y<=ymax) & (y>=ymin)
+
+        Ug[vid] = U[i,j]
+print('The projected potential is:')
+print(Ug)
+
+#Solve the problem
 #allocate space for the operator matrix
 H=np.zeros(shape=(n,n))
 #Define constants and potential
@@ -63,6 +99,22 @@ print('the number of selected eigenvalues is:')
 print(len(z))
 print('The energies are:')
 print(energies)
+
+#plot the potential
+#define width, depth, height (top and bottom)
+width = depth = 1
+_v=V(xdim,ydim)
+top=_v.ravel()
+bottom = np.zeros_like(top)
+
+cmap = cm.get_cmap('Spectral') # Get desired colormap
+max_height = np.max(top)   # get range of colorbars so we can normalize
+min_height = np.min(top)
+# scale each z to [0,1], and get their rgb values
+rgba = [cmap((k-min_height)/max_height) for k in top]
+
+ax.bar3d(x,y,bottom,width,depth,top, color=rgba)
+plt.show()
 
 
 

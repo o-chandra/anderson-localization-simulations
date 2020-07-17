@@ -29,20 +29,14 @@ x = np.linspace(0,xf,n)
 y = x
 [x,y]=np.meshgrid(x,y)
 
-
-#set up figure and axes
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-#generate analytic potential
-U=np.random.rand(m,m);
-print('U is:')
+U=np.random.rand(m,m) #generate analytic potential
+print ('the analytic potential is:')
 print(U)
 #generate projected discretized potential
 Ug = np.zeros(x.shape)
-for i in range (N):
-    for j in range(N):
-        delx = float(L)/N;
+for i in range (m):
+    for j in range(m):
+        delx = float(xf)/m;
         dely = delx
 
         xmin = (i)*delx
@@ -54,71 +48,50 @@ for i in range (N):
         vid = (x<=xmax) & (x>=xmin) & (y<=ymax) & (y>=ymin)
 
         Ug[vid] = U[i,j]
-print('The projected potential is:')
+print('the discretized potential is:')
 print(Ug)
-
 #Solve the problem
 #allocate space for the operator matrix
-H=np.zeros(shape=(n,n))
-#Define constants and potential
+H=np.zeros(shape=(m,m))
+#Define constants
 p=1
-def V(x):
-    if v=='constant':
-        return 0*x
-    if v=='linear':
-        return x
-    if v=='quadratic':
-        return x**2
-    else:
-        print('Invalid potential! Try again.')
-        exit()
-potential=V(x)
-print(len(potential))
+V=Ug
+print("V is:")
+print(V)
+v=V.item((0,0))
+print(v)
 
-#Define boundary conditions
-
-H[0,0]=2*p+V(x[0])
+ ###I don't think this is the right form for the operator matrix in 2d: need to rederive w/ new stencil!###
+ #Define boundary conditions
+H[0,0]=2*p+V.item(0,0)
 H[0,1]=-p
-H[n-1,n-2]=-p
-H[n-1,n-1]=2*p+V(x[n-1])
+H[m-1,m-2]=-p
+H[m-1,m-1]=2*p+V.item((m-1,m-1))
 
 #Fill in the rest of the matrix
-for j in range (1, n):
+for j in range (1, m):
     H[j-1,j-2]=-p
-    H[j-1,j-1]=2*p+V(x[j-1])
+    H[j-1,j-1]=2*p+V.item((j-1,j-1))
     H[j-1,j]=-p
 print(H)
 #Solve for the eigenvalues and eigenvectors, sort them from smallest to largest (abs)
 val, vec=np.linalg.eig(H)
 z=np.argsort(val)
-z=z[0:e]
+z=z[0:vmax]
 print(z)
-#normalize
-energies=(val[z]/val[z][0])
+
+energies=(val[z]/val[z][0]) #normalize
 print('the number of selected eigenvalues is:')
 print(len(z))
 print('The energies are:')
 print(energies)
 
-#plot the potential
-#define width, depth, height (top and bottom)
-width = depth = 1
-_v=V(xdim,ydim)
-top=_v.ravel()
-bottom = np.zeros_like(top)
-
-cmap = cm.get_cmap('Spectral') # Get desired colormap
-max_height = np.max(top)   # get range of colorbars so we can normalize
-min_height = np.min(top)
-# scale each z to [0,1], and get their rgb values
-rgba = [cmap((k-min_height)/max_height) for k in top]
-
-ax.bar3d(x,y,bottom,width,depth,top, color=rgba)
-plt.show()
+#plot the eigenfunctions and eigenvalues
 
 
+fig = plt.figure() #set up figure and axes
+ax = fig.gca(projection='3d')
 
-#Plot the eigenfunctions and the potential
 plt.figure(figsize=(10,10))
 for i in range(len(z)):
     y=[]
@@ -129,7 +102,6 @@ for i in range(len(z)):
     plt.plot(x,y,lw=3,label="{} ".format(i))
     plt.plot(x,potential, label='{}'.format(i))
     plt.xlabel('x', size=14)
-    plt.xlim([0, 1])
     plt.ylabel('$\psi$(x)', size=14)
 plt.legend()
 plt.title('Normalized eigenfunctions',size=14)
